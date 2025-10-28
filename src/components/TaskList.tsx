@@ -65,6 +65,7 @@ export const TaskList = ({ refreshTrigger }: { refreshTrigger: number }) => {
   }, [refreshTrigger]);
 
   const handleScheduleTasks = async () => {
+    console.log('Smart Schedule clicked');
     setScheduling(true);
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -74,15 +75,18 @@ export const TaskList = ({ refreshTrigger }: { refreshTrigger: number }) => {
       return;
     }
 
-    const { error } = await supabase.functions.invoke('schedule-tasks', {
+    console.log('Invoking schedule-tasks function...');
+    const { data, error } = await supabase.functions.invoke('schedule-tasks', {
       headers: {
         Authorization: `Bearer ${session.access_token}`
       }
     });
 
+    console.log('Schedule tasks response:', { data, error });
+
     if (error) {
-      toast.error("Failed to schedule tasks");
-      console.error(error);
+      toast.error("Failed to schedule tasks: " + error.message);
+      console.error('Schedule error:', error);
     } else {
       toast.success("Tasks scheduled based on your mood!");
       fetchTasks();

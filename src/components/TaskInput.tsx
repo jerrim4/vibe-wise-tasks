@@ -42,6 +42,7 @@ export const TaskInput = ({ onTaskAdded }: { onTaskAdded: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted');
     setLoading(true);
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -51,10 +52,18 @@ export const TaskInput = ({ onTaskAdded }: { onTaskAdded: () => void }) => {
       return;
     }
 
+    if (!title.trim()) {
+      toast.error("Please enter a task title");
+      setLoading(false);
+      return;
+    }
+
+    console.log('Inserting task:', { title, taskType, priority, duration, cognitiveLoad });
+
     const { error } = await supabase.from('tasks').insert({
       user_id: user.id,
-      title,
-      description: description || null,
+      title: title.trim(),
+      description: description.trim() || null,
       task_type: taskType,
       priority,
       duration_minutes: parseInt(duration),
@@ -63,10 +72,11 @@ export const TaskInput = ({ onTaskAdded }: { onTaskAdded: () => void }) => {
     });
 
     if (error) {
-      toast.error("Failed to add task");
-      console.error(error);
+      toast.error("Failed to add task: " + error.message);
+      console.error('Insert error:', error);
     } else {
       toast.success("Task added!");
+      console.log('Task added successfully');
       // Reset form
       setTitle("");
       setDescription("");
