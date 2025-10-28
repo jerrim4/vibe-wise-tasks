@@ -1,0 +1,7 @@
+project_id = "gsgluufearsttfmallfv"
+
+[functions.schedule-tasks]
+verify_jwt = true
+
+[functions.generate-affirmation]
+verify_jwt = true
