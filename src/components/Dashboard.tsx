@@ -5,13 +5,15 @@ import { MoodCheckIn } from "./MoodCheckIn";
 import { TaskInput } from "./TaskInput";
 import { TaskList } from "./TaskList";
 import { AffirmationCard } from "./AffirmationCard";
-import { LogOut, Sparkles } from "lucide-react";
+import { LogOut, Sparkles, Moon, Sun } from "lucide-react";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 export const Dashboard = () => {
   const [showMoodCheckIn, setShowMoodCheckIn] = useState(false);
   const [taskRefresh, setTaskRefresh] = useState(0);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     checkTodaysMoodCheckIn();
@@ -66,6 +68,13 @@ export const Dashboard = () => {
                 Update Mood
               </Button>
             )}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
             <Button variant="ghost" size="icon" onClick={handleSignOut}>
               <LogOut className="w-5 h-5" />
             </Button>
