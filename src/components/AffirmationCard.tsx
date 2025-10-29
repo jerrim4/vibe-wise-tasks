@@ -71,8 +71,8 @@ export const AffirmationCard = () => {
   }, []);
 
   return (
-    <Card className="shadow-[var(--shadow-glow)] border-primary/20 overflow-hidden">
-      <div className="absolute inset-0 opacity-10" style={{ background: 'var(--gradient-glow)' }} />
+    <Card className="relative shadow-[var(--shadow-glow)] border-primary/20 overflow-hidden">
+      <div className="absolute inset-0 opacity-10 pointer-events-none -z-10" style={{ background: 'var(--gradient-glow)' }} />
       <CardContent className="relative pt-6 pb-4 text-center space-y-4">
         <Heart className="w-8 h-8 mx-auto text-accent animate-pulse" />
         <p className="text-lg font-medium text-foreground leading-relaxed min-h-[3rem] flex items-center justify-center">
