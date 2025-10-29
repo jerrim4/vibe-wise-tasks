@@ -56,7 +56,7 @@ export const Dashboard = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-primary" />
-            MindFlow
+            SereniDay
           </h1>
           <div className="flex items-center gap-4">
             {hasCheckedIn && (
