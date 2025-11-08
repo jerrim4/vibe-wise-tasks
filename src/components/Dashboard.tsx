@@ -5,15 +5,19 @@ import { MoodCheckIn } from "./MoodCheckIn";
 import { TaskInput } from "./TaskInput";
 import { TaskList } from "./TaskList";
 import { AffirmationCard } from "./AffirmationCard";
-import { LogOut, Sparkles, Moon, Sun } from "lucide-react";
+import { LogOut, Sparkles, Moon, Sun, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useNavigate } from "react-router-dom";
 
 export const Dashboard = () => {
   const [showMoodCheckIn, setShowMoodCheckIn] = useState(false);
   const [taskRefresh, setTaskRefresh] = useState(0);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { isAdmin } = useIsAdmin();
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkTodaysMoodCheckIn();
@@ -66,6 +70,17 @@ export const Dashboard = () => {
                 onClick={() => setShowMoodCheckIn(true)}
               >
                 Update Mood
+              </Button>
+            )}
+            {isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/admin")}
+                className="gap-2"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
               </Button>
             )}
             <Button 

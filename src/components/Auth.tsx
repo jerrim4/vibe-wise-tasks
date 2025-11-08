@@ -15,10 +15,31 @@ export const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    
+    const { data, error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`
+      }
+    });
+    
     if (error) {
       toast.error(error.message);
-    } else {
+    } else if (data.user) {
+      // Create profile entry
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: data.user.id,
+          email: email,
+          created_at: new Date().toISOString()
+        });
+      
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+      }
+      
       toast.success("Account created! You can now sign in.");
     }
     setLoading(false);
