@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.generate-affirmation]
 verify_jwt = true
+
+[functions.admin-reset-password]
+verify_jwt = true

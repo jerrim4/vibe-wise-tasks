@@ -65,6 +65,39 @@ export default function Admin() {
     return userRole?.role || 'user';
   };
 
+  const handleResetPassword = async (userId: string, email: string) => {
+    const newPassword = prompt(`Enter new password for ${email}:`);
+    if (!newPassword) return;
+
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-reset-password`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, newPassword }),
+      });
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        toast.error(result.error || 'Failed to reset password');
+      } else {
+        toast.success('Password updated successfully');
+      }
+    } catch (error) {
+      toast.error('Error resetting password');
+      console.error('Error:', error);
+    }
+  };
+
   if (adminLoading || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -142,9 +175,16 @@ export default function Admin() {
                                 <p>Last sign in: {new Date(profile.last_sign_in).toLocaleDateString()}</p>
                               )}
                             </div>
-                          </div>
-                        </div>
-                      </div>
+                           </div>
+                         </div>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => handleResetPassword(profile.user_id, profile.email || '')}
+                         >
+                           Reset Password
+                         </Button>
+                       </div>
                     </CardContent>
                   </Card>
                 ))}
