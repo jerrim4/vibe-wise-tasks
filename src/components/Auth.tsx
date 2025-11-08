@@ -16,7 +16,7 @@ export const Auth = () => {
     e.preventDefault();
     setLoading(true);
     
-    const { data, error } = await supabase.auth.signUp({ 
+    const { error } = await supabase.auth.signUp({ 
       email, 
       password,
       options: {
@@ -26,20 +26,7 @@ export const Auth = () => {
     
     if (error) {
       toast.error(error.message);
-    } else if (data.user) {
-      // Create profile entry
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          user_id: data.user.id,
-          email: email,
-          created_at: new Date().toISOString()
-        });
-      
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-      }
-      
+    } else {
       toast.success("Account created! You can now sign in.");
     }
     setLoading(false);
@@ -48,10 +35,18 @@ export const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
     if (error) {
       toast.error(error.message);
-    } else {
+    } else if (data.user) {
+      // Update last sign in
+      await supabase
+        .from('profiles')
+        .update({ last_sign_in: new Date().toISOString() })
+        .eq('user_id', data.user.id);
+      
       toast.success("Welcome back!");
     }
     setLoading(false);
